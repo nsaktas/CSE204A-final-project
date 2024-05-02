@@ -1,0 +1,13 @@
+.word-boxes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+}
+.word-row {
+    display: flex;
+}
+.word-button {
+    margin: 2px;
+    color: black;
+}

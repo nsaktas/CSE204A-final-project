@@ -1,0 +1,18 @@
+.keyboard{
+    max-width: 500px;
+    margin: 20px auto
+}
+
+.keyboard > div {
+    margin: 5px;
+    width: 40px;
+    height: 50px;
+    background: rgb(141, 140, 140);
+    display: inline-block;
+    line-height: 50px;
+    border-radius: 6px;
+}
+
+.correct-guess {
+    background-color: green;
+}
