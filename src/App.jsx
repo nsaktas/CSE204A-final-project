@@ -21,6 +21,7 @@ const App = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wordBoxes, setWordBoxes] = useState(Array(5).fill(Array(5).fill('')));
   const [colorBoxes, setColorBoxes] = useState(Array(5).fill(Array(5).fill('gray')));
+  const [gameEnd, setGameEnd] = useState(false);
 
 
   const fetchWords = () => {
@@ -85,6 +86,7 @@ const App = () => {
     setIndexMap(null);
     setWordBoxes(Array(attempts).fill(Array(wordLength).fill('')));
     setColorBoxes(Array(attempts).fill(Array(wordLength).fill('gray')));
+    setGameEnd(false);
 
     setCurrentIndex(0);
     setHints([]);
@@ -99,6 +101,8 @@ const App = () => {
   
 
   const handleLetterClick = (key) => {
+    if(!gameEnd){
+
     if(key == 'Submit' && (currentIndex==wordLength)){
       setCurrentIndex(0);
       const tempDoubleArray = [...wordBoxes];
@@ -114,7 +118,13 @@ const App = () => {
 
       console.log(results);
 
-      const tempWord = tempRow.join('');
+      const tempWord = tempRow.join('').toLowerCase();
+
+      console.log(tempWord);
+      console.log(words[0]);
+      if(tempWord == words[0]){
+        setGameEnd(true);
+      }
 
       console.log(tempDoubleColorArray);
       setColorBoxes(tempDoubleColorArray);
@@ -143,8 +153,10 @@ const App = () => {
 
       setWordBoxes(tempDoubleArray);
       setCurrentIndex(currentIndex+1)
-    } else{
+    }  else{
       console.log('nothing happened')
+    } } else if(gameEnd) {
+      console.log('game over u win')
     }
 
 };
