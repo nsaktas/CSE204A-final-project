@@ -3,7 +3,6 @@ import './App.css';
 import Keyboard from './Keyboard';
 import './Keyboard.css';
 import './WordBox.css';
-import WordDisplay from './WordDisplay';
 import WordFilter from './WordFilter';
 import WordRow from './WordRow';
 
@@ -103,7 +102,7 @@ const App = () => {
   const handleLetterClick = (key) => {
     if(!gameEnd){
 
-    if(key == 'Submit' && (currentIndex==wordLength)){
+    if(key == 'Submit' && (currentIndex==wordLength) && (attemptsMade <= attempts)){
       setCurrentIndex(0);
       const tempDoubleArray = [...wordBoxes];
       const tempRow = [...tempDoubleArray[attemptsMade]];
@@ -130,7 +129,7 @@ const App = () => {
       setColorBoxes(tempDoubleColorArray);
       setAttemptsMade(attemptsMade+1);
     }
-    else if (key == 'Delete' && (currentIndex > 0)) {
+    else if (key == 'Delete' && (currentIndex > 0) && (attemptsMade <= attempts)) {
       const tempCurrIndex = currentIndex-1;
 
       const tempDoubleArray = [...wordBoxes];
@@ -140,7 +139,7 @@ const App = () => {
 
       setCurrentIndex(currentIndex-1);
       setWordBoxes(tempDoubleArray);
-    } else if((key != 'Submit') && (key != 'Delete') && (currentIndex < wordLength)) {
+    } else if((key != 'Submit') && (key != 'Delete') && (currentIndex < wordLength) && (attemptsMade <= attempts)) {
       console.log(key);
       var tempArray = attempts;
       // console.log(tempArray);
@@ -211,9 +210,6 @@ const handleHintClick = () => {
     // <>
     <div>
     <h1>Guess the Word!</h1>
-    {<p>Current Index: {currentIndex}</p>}
-    {<p>Attempts Made: {attemptsMade}</p>}
-    <p>Number of Attempts: {attempts}</p>
 
     <WordFilter
       onGenerate={handleGenerateClick}
@@ -223,7 +219,6 @@ const handleHintClick = () => {
     />
     <button onClick={handleHintClick}>Hint</button>
     {hints && <p>{hints}</p>}
-    <WordDisplay words={words} />
 
     {words.length > 0 &&  <div className="wordBoxes">
       {wordBoxes.map((wordRow, index) => (
@@ -231,28 +226,7 @@ const handleHintClick = () => {
       ))}
     </div>}
     
-    {guessedLetters &&     <Keyboard onLetterClick={handleLetterClick} guessedLetters={guessedLetters} />}
-    {/* <Keyboard onLetterClick={handleLetterClick} guessedLetters={guessedLetters} /> */}
-
-    
-    <div>
-      <h2>Guessed Letters</h2>
-      <ul>
-        {guessedLetters.map((letter, index) => (
-          <li key={index}>{letter}</li>
-        ))}
-      </ul>
-    </div>
-
-    {indexMap && (
-  <>
-    {Object.keys(indexMap).map((char, index) => (
-      <li key={index}>
-        {char}: [{indexMap[char].join(', ')}]
-      </li>
-    ))}
-  </>
-)}
+    {<Keyboard onLetterClick={handleLetterClick} guessedLetters={guessedLetters} />}
 
   </div>
     

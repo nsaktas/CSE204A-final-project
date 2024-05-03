@@ -32,7 +32,7 @@ return (
     id="wordLength"
     maxLength="1"
     min='3'
-    max='9'
+    max='5'
     onChange={handleWordLengthChange}
     />
     </div>

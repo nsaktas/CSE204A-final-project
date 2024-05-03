@@ -1,6 +1,5 @@
 .word-box{
     margin: 5px;
-    /* width: 40px; */
     min-width: 50px;
     width: fit-content;
     padding-right: 5px;
