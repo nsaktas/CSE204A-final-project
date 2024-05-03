@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './App.css';
 import Keyboard from './Keyboard';
 import './Keyboard.css';
-import WordBox from './WordBox';
 import './WordBox.css';
 import WordDisplay from './WordDisplay';
 import WordFilter from './WordFilter';
+import WordRow from './WordRow';
+
 
 const App = () => {
   const [words, setWords] = useState([]);
@@ -17,10 +18,14 @@ const App = () => {
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [indexMap, setIndexMap] = useState(null);
   const [attemptsMade, setAttemptsMade] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [wordBoxes, setWordBoxes] = useState(Array(5).fill(Array(5).fill('')));
 
 
   const fetchWords = () => {
     let apiUrl = `https://random-word-api.vercel.app/api?words=1`;
+    console.log(wordLength);
+    console.log(firstLetter);
 
     if (wordLength) {
       apiUrl += `&length=${wordLength}`;
@@ -33,11 +38,10 @@ const App = () => {
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
+        console.log(data[0]);
+        console.log(wordLength);
         setWords(data);
         setIndexMap(createIndexMap(data[0]));
-        console.log();
-
-
 
         console.log(data[0]);
       })
@@ -45,6 +49,8 @@ const App = () => {
   };
 
     const createIndexMap = (str) => {
+      console.log('STR');
+      console.log(str);
       const indexMap = {};
       for (let i = 0; i < str.length; i++) {
         const char = str[i];
@@ -57,35 +63,75 @@ const App = () => {
       return indexMap;
     };
 
-  const handleWordLengthChange = newLength => {
-    setWordLength(newLength);
-  };
+    const handleWordLengthChange = (newLength) => {
+      // console.log("word length change trigger to" + newLength)
+      setWordLength(newLength);
+    };
 
   const handleFirstLetterChange = newLetter => {
-    setFirstLetter(newLetter);
+    const lowerCaseLetter = newLetter.toLowerCase();
+    setFirstLetter(lowerCaseLetter);
   };
+  
 
   const handleGenerateClick = () => {
+    handleBoardStates();
+    fetchWords();
+  };
+
+  const handleBoardStates = () => {
     setAttemptsMade(0);
     setIndexMap(null);
-    fetchWords();
+    setWordBoxes(Array(attempts).fill(Array(wordLength).fill('')));
+    setCurrentIndex(0);
     setHints([]);
+    setFirstLetter(firstLetter);
   };
 
   const handleAttemptsChange = newAttempts => {
+    // console.log("attemptschange trigger to" + newAttempts)
+
     setAttempts(newAttempts);
   };
 
-  const handleLetterGuess = letter => {
-    if (!usedKeys[letter]) {
-      const isCorrectGuess = words[0].includes(letter);
-      setGuessedLetters([...guessedLetters, { letter, isCorrect: isCorrectGuess }]);
-      setUsedKeys({ ...usedKeys, [letter]: true });
-    }
-  };
+  const handleLetterClick = (key) => {
+    if(key == 'Submit' && (currentIndex==wordLength)){
+      setCurrentIndex(0);
+      const tempDoubleArray = [...wordBoxes];
+      const tempRow = [...tempDoubleArray[attemptsMade]];
+      console.log(tempRow);
 
-  const handleLetterClick = (letter) => {
-    setGuessedLetters([...guessedLetters, letter]);
+      const tempWord = tempRow.join('');
+      console.log(tempWord);
+      setAttemptsMade(attemptsMade+1);
+    }
+    else if (key == 'Delete' && (currentIndex > 0)) {
+      const tempCurrIndex = currentIndex-1;
+
+      const tempDoubleArray = [...wordBoxes];
+      const tempRow = [...tempDoubleArray[attemptsMade]];
+      tempRow[tempCurrIndex] = '';
+      tempDoubleArray[attemptsMade] = tempRow
+
+      setCurrentIndex(currentIndex-1);
+      setWordBoxes(tempDoubleArray);
+    } else if((key != 'Submit') && (key != 'Delete') && (currentIndex < wordLength)) {
+      console.log(key);
+      var tempArray = attempts;
+      // console.log(tempArray);
+
+      const tempDoubleArray = [...wordBoxes];
+      const tempRow = [...tempDoubleArray[attemptsMade]];
+      tempRow[currentIndex] = key;
+      tempDoubleArray[attemptsMade] = tempRow
+      // console.log(tempDoubleArray);
+
+      setWordBoxes(tempDoubleArray);
+      setCurrentIndex(currentIndex+1)
+    } else{
+      console.log('nothing happened')
+    }
+
 };
 
   const fetchWordDefinition = word => {
@@ -111,6 +157,10 @@ const handleHintClick = () => {
     // <>
     <div>
     <h1>Guess the Word!</h1>
+    {<p>Current Index: {currentIndex}</p>}
+    {<p>Attempts Made: {attemptsMade}</p>}
+    <p>Number of Attempts: {attempts}</p>
+
     <WordFilter
       onGenerate={handleGenerateClick}
       onWordLengthChange={handleWordLengthChange}
@@ -118,11 +168,15 @@ const handleHintClick = () => {
       onAttemptsChange={handleAttemptsChange}
     />
     <button onClick={handleHintClick}>Hint</button>
-    {attemptsMade && <p>{attemptsMade}</p>}
     {hints && <p>{hints}</p>}
     <WordDisplay words={words} />
-    {words.length > 0 && <WordBox word={words[0]} attempts={attempts} />}
-    <p>Number of Attempts: {attempts}</p>
+
+    {words.length > 0 &&  <div className="wordBoxes">
+      {wordBoxes.map((wordRow, index) => (
+        <WordRow key={index} wordRow={wordRow} />
+      ))}
+    </div>}
+    
     {guessedLetters &&     <Keyboard onLetterClick={handleLetterClick} guessedLetters={guessedLetters} />}
     {/* <Keyboard onLetterClick={handleLetterClick} guessedLetters={guessedLetters} /> */}
 
@@ -135,6 +189,7 @@ const handleHintClick = () => {
         ))}
       </ul>
     </div>
+
     {indexMap && (
   <>
     {Object.keys(indexMap).map((char, index) => (

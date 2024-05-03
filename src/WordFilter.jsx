@@ -5,7 +5,6 @@ const [attempts, setAttempts] = useState('');
 
 const handleAttemptsChange = event => {
     const newAttempts = parseInt(event.target.value);
-    setAttempts(newAttempts);
     onAttemptsChange(newAttempts);
 };
 
@@ -24,30 +23,43 @@ const handleFirstLetterChange = event => {
 };
 
 return (
-    <div>
+    <div className="filtersContainer">
     <h2>Word Filters</h2>
+    <div className='filterInputContainer'>
     <label htmlFor="wordLength">Word Length:</label>
     <input
-        type="number"
-        id="wordLength"
-        min="1"
-        onChange={handleWordLengthChange}
+    type="number"
+    id="wordLength"
+    maxLength="1"
+    min='3'
+    max='9'
+    onChange={handleWordLengthChange}
     />
+    </div>
+
+
+    <div className='filterInputContainer'>
     <label htmlFor="firstLetter">First Letter:</label>
     <input
         type="text"
         id="firstLetter"
         maxLength="1"
         onChange={handleFirstLetterChange}
-    />
+    /> 
+    </div>
+
+
+    <div className='filterInputContainer'>
     <label htmlFor="attempts">Number of Attempts:</label>
     <input
         type="number"
         id="attempts"
         min="1"
-        value={attempts}
+        max='10'
         onChange={handleAttemptsChange}
-    />
+    />  
+    </div>
+
     <button onClick={handleGenerateClick}>Generate</button>
     </div>
     );

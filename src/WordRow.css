@@ -1,12 +1,7 @@
-.keyboard{
-    max-width: 500px;
-    margin: 20px auto
-}
-
-.keyboard > div {
+.word-box{
     margin: 5px;
     /* width: 40px; */
-    min-width: 30px;
+    min-width: 50px;
     width: fit-content;
     padding-right: 5px;
     padding-left: 5px;
@@ -15,12 +10,4 @@
     display: inline-block;
     line-height: 50px;
     border-radius: 6px;
-}
-
-.keyboard > div:hover {
-    background-color: #6c757d;
-}
-
-.correct-guess {
-    background-color: green;
 }

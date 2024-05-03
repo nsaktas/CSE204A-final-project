@@ -6,10 +6,11 @@ const Keyboard = ({ onLetterClick, guessedLetters }) => {
     const [correctGuesses, setCorrectGuesses] = useState(new Set());
 
     useEffect(() => {
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const lettersArray = alphabet.split("").map(letter => ({ key: letter }));
+        const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM";
+        const lettersArray = [...alphabet, "Submit", "Delete"].map(key => ({ key }));
         setLetters(lettersArray);
-    }, []);
+      }, []);
+      
 
     const handleLetterClick = (letter) => {
         if (!guessedLetters.includes(letter)) {
