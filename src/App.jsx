@@ -84,6 +84,8 @@ const App = () => {
     setAttemptsMade(0);
     setIndexMap(null);
     setWordBoxes(Array(attempts).fill(Array(wordLength).fill('')));
+    setColorBoxes(Array(attempts).fill(Array(wordLength).fill('gray')));
+
     setCurrentIndex(0);
     setHints([]);
     setFirstLetter(firstLetter);
@@ -103,10 +105,19 @@ const App = () => {
       const tempRow = [...tempDoubleArray[attemptsMade]];
       const tempMap = indexMap;
       const results = compareCharacters(tempRow, tempMap);
+
+      var tempDoubleColorArray = [...colorBoxes];
+      var tempColorRow = [...tempDoubleColorArray[attemptsMade]];
+      tempColorRow = results;
+      tempDoubleColorArray[attemptsMade] = tempColorRow;
+      console.log
+
       console.log(results);
 
       const tempWord = tempRow.join('');
 
+      console.log(tempDoubleColorArray);
+      setColorBoxes(tempDoubleColorArray);
       setAttemptsMade(attemptsMade+1);
     }
     else if (key == 'Delete' && (currentIndex > 0)) {
@@ -150,14 +161,14 @@ const compareCharacters = (tempRow, tempMap) => {
     // Case 1: Character doesn't exist in indexMap
     console.log(char.toString);
     if (!tempMap.hasOwnProperty(char)) {
-      results.push("red");
+      results.push("#424242");
     } else {
       // Case 2: Character exists in indexMap but not in the correct spot
       if (!tempMap[char].includes(i)) {
-        results.push("yellow");
+        results.push("#FFD700");
       } else {
         // Case 3: Character exists in indexMap and in the correct spot
-        results.push("green");
+        results.push("#4CAF50");
       }
     }
   }
@@ -204,7 +215,7 @@ const handleHintClick = () => {
 
     {words.length > 0 &&  <div className="wordBoxes">
       {wordBoxes.map((wordRow, index) => (
-        <WordRow key={index} wordRow={wordRow} />
+        <WordRow key={index} wordRow={wordRow} colorRow={colorBoxes[index]} />
       ))}
     </div>}
     
