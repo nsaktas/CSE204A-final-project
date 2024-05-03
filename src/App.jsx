@@ -20,6 +20,7 @@ const App = () => {
   const [attemptsMade, setAttemptsMade] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wordBoxes, setWordBoxes] = useState(Array(5).fill(Array(5).fill('')));
+  const [colorBoxes, setColorBoxes] = useState(Array(5).fill(Array(5).fill('gray')));
 
 
   const fetchWords = () => {
@@ -48,10 +49,10 @@ const App = () => {
       .catch(error => console.error('Error fetching words:', error));
   };
 
-    const createIndexMap = (str) => {
+    const createIndexMap = (str1) => {
       console.log('STR');
-      console.log(str);
       const indexMap = {};
+      const str = str1.toUpperCase();
       for (let i = 0; i < str.length; i++) {
         const char = str[i];
         if (!indexMap[char]) {
@@ -93,16 +94,19 @@ const App = () => {
 
     setAttempts(newAttempts);
   };
+  
 
   const handleLetterClick = (key) => {
     if(key == 'Submit' && (currentIndex==wordLength)){
       setCurrentIndex(0);
       const tempDoubleArray = [...wordBoxes];
       const tempRow = [...tempDoubleArray[attemptsMade]];
-      console.log(tempRow);
+      const tempMap = indexMap;
+      const results = compareCharacters(tempRow, tempMap);
+      console.log(results);
 
       const tempWord = tempRow.join('');
-      console.log(tempWord);
+
       setAttemptsMade(attemptsMade+1);
     }
     else if (key == 'Delete' && (currentIndex > 0)) {
@@ -133,6 +137,33 @@ const App = () => {
     }
 
 };
+
+const compareCharacters = (tempRow, tempMap) => {
+  const results = [];
+
+  for (let key in tempMap) {
+    console.log(key);
+  }
+
+  for (let i = 0; i < tempRow.length; i++) {
+    const char = tempRow[i];
+    // Case 1: Character doesn't exist in indexMap
+    console.log(char.toString);
+    if (!tempMap.hasOwnProperty(char)) {
+      results.push("red");
+    } else {
+      // Case 2: Character exists in indexMap but not in the correct spot
+      if (!tempMap[char].includes(i)) {
+        results.push("yellow");
+      } else {
+        // Case 3: Character exists in indexMap and in the correct spot
+        results.push("green");
+      }
+    }
+  }
+
+  return results;
+}
 
   const fetchWordDefinition = word => {
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
